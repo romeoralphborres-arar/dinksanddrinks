@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+
+<div style="text-align:center; margin-bottom:15px;">
+  <img
+    src="assetslogo.png.png"
+    alt="D&D Dinks and Drinks Logo"
+    style="max-width:280px; width:100%; height:auto;"
+  />
+</div>
+
+
+  <meta charset="UTF-8" />
+  <title>Dinks and Drinks | Pickleball Court Reservation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff6a;
+      margin: 10px 0 0;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      margin: 6px 0 18px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: auto;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px #2a2a2a inset;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    input, select {
+      background: #2a2a2a;
+      color: #fff;
+      outline: none;
+    }
+
+    input::file-selector-button {
+      border: none;
+      background: #00ff6a;
+      color: #000;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    button {
+      background: #00ff6a;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: transform 0.05s ease-in-out;
+    }
+    button:active { transform: scale(0.99); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 720px) {
+      .row { grid-template-columns: 1fr; }
+    }
+
+    .admin-btn {
+      background: #ff9800;
+      margin-top: 10px;
+      color: #000;
+    }
+
+    .danger {
+      background: #ff4d4d;
+      color: #fff;
+    }
+
+    .slot {
+      padding: 12px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slot small { color: #aaa; display:block; margin-top: 4px; }
+
+    .booked {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .available {
+      color: #00ff6a;
+      font-weight: bold;
+    }
+
+    .slot-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .mini-btn {
+      width: auto;
+      padding: 8px 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #fff;
+      border: 1px solid #3a3a3a;
+      cursor: pointer;
+    }
+
+    a.receipt-link {
+      color: #00ff6a;
+      text-decoration: none;
+      font-weight: bold;
+      border-bottom: 1px dotted #00ff6a;
+    }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.4;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #2a2a2a;
+      color: #ddd;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div style="text-align:center; margin-bottom:15px;">
+    <!-- Optional: put your logo file in same folder and name it exactly below -->
+  </div>
+
+  <h1>Dinks & Drinks</h1>
+  <div class="subtitle">Pickleball Court Reservation • 2 Courts • 1‑hour slots • 200PHP/HR</div>
+
+  <div class="container">
+    <div class="row">
+      <div>
+        <label>Select Date</label>
+        <input type="date" id="date" />
+      </div>
+
+      <div>
+        <label>Select Court</label>
+        <select id="court">
+          <option value="Court 1">Court 1</option>
+          <option value="Court 2">Court 2</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Select Time Slot (1 Hour)</label>
+    <select id="time"></select>
+
+    <div class="row">
+      <div>
+        <label>Your Name</label>
+        <input type="text" id="name" placeholder="Enter your name" />
+      </div>
+      <div>
+        <label>Mobile</label>
+        <input type="text" id="mobile" placeholder="09xx xxx xxxx" />
+      </div>
+    </div>
+
+    <label>Payment / Receipt Upload (required)</label>
+    <input type="file" id="receipt" accept="image/*,.pdf" />
+
+    <div class="hint">
+
+    </div>
+
+    <button onclick="reserve()">Reserve Court</button>
+
+    <button class="admin-btn" onclick="adminLogin()">Admin Mode</button>
+
+    <div id="adminPanel" style="display:none;">
+      <div class="pill">🔐 Admin Mode Enabled</div>
+      <button class="danger" onclick="clearDay()">Clear All Reservations (This Court & Date)</button>
+    </div>
+
+    <h3 style="margin-top:25px;">📅 Reservations</h3>
+    <div id="reservations"></div>
+  </div>
+
+  <footer>
+    Dink Responsibly • Dinks and Drinks
+  </footer>
+  
+    <footer>
+    Admin: Romeo Ralph Borres
+  </footer>
+
+<script>
+  // ===== Config =====
+  const ADMIN_PIN = "1234"; // change this
+  const OPEN_HOUR = 8;      // 8:00 AM
+  const CLOSE_HOUR = 24;    // 12:00 AM (midnight)
+  const SLOT_MINUTES = 60;
+
+  let isAdmin = false;
+
+  // ===== Time slots =====
+  const timeSlots = [];
+  for (let h = OPEN_HOUR; h < CLOSE_HOUR; h++) {
+    const start = String(h).padStart(2, "0") + ":00";
+    const end = String((h + 1) % 24).padStart(2, "0") + ":00";
+    timeSlots.push(`${start} - ${end}`);
+  }
+
+  const timeSelect = document.getElementById("time");
+  timeSlots.forEach(slot => {
+    const opt = document.createElement("option");
+    opt.value = slot;
+    opt.textContent = slot;
+    timeSelect.appendChild(opt);
+  });
+
+  // ===== DOM refs =====
+  const dateInput = document.getElementById("date");
+  const courtSelect = document.getElementById("court");
+  const nameInput = document.getElementById("name");
+  const mobileInput = document.getElementById("mobile");
+  const receiptInput = document.getElementById("receipt");
+  const reservations = document.getElementById("reservations");
+  const adminPanel = document.getElementById("adminPanel");
+
+  // default date = today
+  dateInput.valueAsDate = new Date();
+
+  dateInput.addEventListener("change", loadReservations);
+  courtSelect.addEventListener("change", loadReservations);
+
+  // ===== Storage helpers =====
+  function getKey(date, court) {
+    return `dinksanddrinks-${date}-${court}`;
+  }
+
+  function readDay(date, court) {
+    const key = getKey(date, court);
+    return JSON.parse(localStorage.getItem(key)) || {};
+  }
+
+  function writeDay(date, court, data) {
+    const key = getKey(date, court);
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  // ===== Receipt handler =====
+  function fileToDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ===== Booking =====
+  async function reserve() {
+    const date = dateInput.value;
+    const court = courtSelect.value;
+    const time = timeSelect.value;
+    const name = nameInput.value.trim();
+    const mobile = mobileInput.value.trim();
+    const file = receiptInput.files[0];
+
+    if (!date || !name || !time || !court) {
+      alert("Please complete date, court, time, and name.");
+      return;
+    }
+
+    if (!file) {
+      alert("Please upload a payment receipt (image or PDF).");
+      return;
+    }
+
+    const data = readDay(date, court);
+
+    if (data[time]) {
+      alert("This time slot is already booked.");
+      return;
+    }
+
+    // store receipt as dataURL (MVP approach)
+    let receiptDataURL = "";
+    try {
+      receiptDataURL = await fileToDataURL(file);
+    } catch {
+      alert("Could not read receipt file. Please try again.");
+      return;
+    }
+
+    data[time] = {
+      name,
+      mobile,
+      receiptName: file.name,
+      receiptType: file.type || "application/octet-stream",
+      receiptDataURL,
+      createdAt: new Date().toISOString()
+    };
+
+    writeDay(date, court, data);
+
+    // reset inputs
+    nameInput.value = "";
+    mobileInput.value = "";
+    receiptInput.value = "";
+
+    loadReservations();
+    alert("Reservation confirmed!");
+  }
+
+  function loadReservations() {
+    const date = dateInput.value;
+    const court = courtSelect.value;
+    reservations.innerHTML = "";
+
+    if (!date) return;
+
+    const data = readDay(date, court);
+
+    timeSlots.forEach(slot => {
+      const div = document.createElement("div");
+      div.className = "slot";
+
+      if (data[slot]) {
+        const entry = data[slot];
+        const receiptLink = entry.receiptDataURL
+          ? `<a class="receipt-link" href="${entry.receiptDataURL}" target="_blank" rel="noopener">View receipt</a>`
+          : `<span style="color:#aaa;">(no receipt)</span>`;
+
+        div.innerHTML = `
+          <div>
+            <div class="booked">${slot} — ${escapeHtml(entry.name)}</div>
+            <small>${entry.mobile ? "📱 " + escapeHtml(entry.mobile) + " • " : ""}${receiptLink} • ${escapeHtml(entry.receiptName || "")}</small>
+          </div>
+          <div class="slot-actions">
+            ${isAdmin ? `<button class="mini-btn danger" onclick="deleteSlot('${slot.replace(/'/g, "\\'")}')">Delete</button>` : ""}
+          </div>
+        `;
+      } else {
+        div.innerHTML = `
+          <div class="available">${slot} — Available</div>
+          <div class="slot-actions"></div>
+        `;
+      }
+
+      reservations.appendChild(div);
+    });
+  }
+
+  function adminLogin() {
+    const pin = prompt("Enter Admin PIN:");
+    if (pin === ADMIN_PIN) {
+      isAdmin = true;
+      adminPanel.style.display = "block";
+      loadReservations();
+      alert("Admin mode activated");
+    } else {
+      alert("Incorrect PIN");
+    }
+  }
+
+  function deleteSlot(slot) {
+    const date = dateInput.value;
+    const court = courtSelect.value;
+    const data = readDay(date, court);
+    if (!data[slot]) return;
+    if (!confirm(`Delete reservation for ${slot}?`)) return;
+    delete data[slot];
+    writeDay(date, court, data);
+    loadReservations();
+  }
+
+  function clearDay() {
+    const date = dateInput.value;
+    const court = courtSelect.value;
+    if (!date) return;
+
+    if (!confirm("Clear ALL reservations for this court and date?")) return;
+    localStorage.removeItem(getKey(date, court));
+    loadReservations();
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  // initial load
+  loadReservations();
+</script>
+
+</body>
+</html>
